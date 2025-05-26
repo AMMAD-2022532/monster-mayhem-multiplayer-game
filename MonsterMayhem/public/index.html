@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Monster Mayhem</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header id="topbar">
+    <div id="youAre">You are Player –</div>
+    <div>
+      Games Played: <span id="totalGames">0</span>
+      | Wins/Losses: <span id="playerStats">–</span>
+      | Turn: Player <span id="currentPlayer">–</span>
+      | Placed: <span id="placedCount">0</span>/1
+    </div>
+    <div id="placedStats"></div>
+    <nav>
+      <button class="monster-btn" data-type="vampire">🦇 Vampire</button>
+      <button class="monster-btn" data-type="werewolf">🐺 Werewolf</button>
+      <button class="monster-btn" data-type="ghost">👻 Ghost</button>
+      <button id="endTurnBtn">End Turn</button>
+    </nav>
+  </header>
+
+  <main id="board" aria-label="Game Board"></main>
+
+  <aside id="logSection" aria-live="polite">
+    <ul id="log"></ul>
+  </aside>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
