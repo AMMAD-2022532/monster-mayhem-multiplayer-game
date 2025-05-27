@@ -1,20 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
   const SIZE = 10;
   const boardEl = document.getElementById('board');
-  let currentPlayer = null;
-
   const socket = io();
+
+  let currentPlayer = null;
+  let selectedMonster = null;
+
   socket.emit('joinGame', 'default');
 
   socket.on('stateUpdate', state => {
     console.clear();
     console.log('Game State:', state);
     renderBoard(state);
+    document.getElementById('currentPlayer').textContent = state.current || '-';
+  });
+
+  document.querySelectorAll('.monster-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedMonster = btn.dataset.type;
+    });
   });
 
   function renderBoard(state) {
     currentPlayer = state.current;
-
     boardEl.innerHTML = '';
     boardEl.style.display = 'grid';
     boardEl.style.gridTemplateColumns = `repeat(${SIZE}, 1fr)`;
@@ -27,13 +35,21 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.dataset.x = x;
         cell.dataset.y = y;
 
-        
-        if (isEdge(x, y, currentPlayer)) {
+        const value = state.board[y][x];
+        if (value) cell.textContent = value.emoji;
+
+        if (isEdge(x, y, currentPlayer) && !value) {
           cell.classList.add('edge');
         }
 
         cell.addEventListener('click', () => {
-          console.log(`Clicked cell (${x}, ${y})`);
+          if (selectedMonster && isEdge(x, y, currentPlayer) && !value) {
+            socket.emit('action', {
+              action: 'place',
+              data: { x, y, type: selectedMonster }
+            });
+            selectedMonster = null;
+          }
         });
 
         boardEl.appendChild(cell);
