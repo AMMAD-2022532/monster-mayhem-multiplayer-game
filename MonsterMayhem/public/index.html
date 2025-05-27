@@ -31,26 +31,8 @@
   <ul id="log"></ul>
 </aside>
 
+
 <script src="/socket.io/socket.io.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const socket = io();
-
-    socket.emit('joinGame', 'default');
-
-    socket.on('stateUpdate', state => {
-      console.clear();
-      console.log('State received:', state);
-      render(state);
-    });
-
-    function render(state) {
-      document.body.innerHTML = `
-        <h1>Monster Mayhem - Game State</h1>
-        <pre>${JSON.stringify(state, null, 2)}</pre>
-      `;
-    }
-  });
-</script>
+<script src="game.js"></script>
 </body>
 </html>
