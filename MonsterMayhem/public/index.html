@@ -7,30 +7,50 @@
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <header id="topbar">
-    <div id="youAre">You are Player –</div>
-    <div>
-      Games Played: <span id="totalGames">0</span>
-      | Wins/Losses: <span id="playerStats">–</span>
-      | Turn: Player <span id="currentPlayer">–</span>
-      | Placed: <span id="placedCount">0</span>/1
-    </div>
-    <div id="placedStats"></div>
-    <nav>
-      <button class="monster-btn" data-type="vampire">🦇 Vampire</button>
-      <button class="monster-btn" data-type="werewolf">🐺 Werewolf</button>
-      <button class="monster-btn" data-type="ghost">👻 Ghost</button>
-      <button id="endTurnBtn">End Turn</button>
-    </nav>
-  </header>
 
-  <main id="board" aria-label="Game Board"></main>
+<header id="topbar">
+  <div id="youAre">You are Player –</div>
+  <div>
+    Games Played: <span id="totalGames">0</span>
+    | Wins/Losses: <span id="playerStats">–</span>
+    | Turn: Player <span id="currentPlayer">–</span>
+    | Placed: <span id="placedCount">0</span>/1
+  </div>
+  <div id="placedStats"></div>
+  <nav>
+    <button class="monster-btn" data-type="vampire">🦇 Vampire</button>
+    <button class="monster-btn" data-type="werewolf">🐺 Werewolf</button>
+    <button class="monster-btn" data-type="ghost">👻 Ghost</button>
+    <button id="endTurnBtn">End Turn</button>
+  </nav>
+</header>
 
-  <aside id="logSection" aria-live="polite">
-    <ul id="log"></ul>
-  </aside>
+<main id="board" aria-label="Game Board"></main>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="game.js"></script>
+<aside id="logSection" aria-live="polite">
+  <ul id="log"></ul>
+</aside>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const socket = io();
+
+    socket.emit('joinGame', 'default');
+
+    socket.on('stateUpdate', state => {
+      console.clear();
+      console.log('State received:', state);
+      render(state);
+    });
+
+    function render(state) {
+      document.body.innerHTML = `
+        <h1>Monster Mayhem - Game State</h1>
+        <pre>${JSON.stringify(state, null, 2)}</pre>
+      `;
+    }
+  });
+</script>
 </body>
 </html>
