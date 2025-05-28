@@ -1,67 +1,49 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const SIZE = 10;
-  const boardEl = document.getElementById('board');
   const socket = io();
+  const SIZE = 10;
+  const EMOJI = { vampire: '🦇', werewolf: '🐺', ghost: '👻' };
+  const playerColors = {
+    1: '#cce5ff',
+    2: '#ffcdd2',
+    3: '#dcedc8',
+    4: '#e1bee7'
+  };
 
-  let currentPlayer = null;
-  let selectedMonster = null;
+  let state = null;
 
   socket.emit('joinGame', 'default');
 
-  socket.on('stateUpdate', state => {
-    console.clear();
-    console.log('Game State:', state);
-    renderBoard(state);
-    document.getElementById('currentPlayer').textContent = state.current || '-';
+  socket.on('stateUpdate', s => {
+    state = s;
+    renderBoard();
   });
 
-  document.querySelectorAll('.monster-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      selectedMonster = btn.dataset.type;
-    });
-  });
-
-  function renderBoard(state) {
-    currentPlayer = state.current;
-    boardEl.innerHTML = '';
-    boardEl.style.display = 'grid';
-    boardEl.style.gridTemplateColumns = `repeat(${SIZE}, 1fr)`;
-    boardEl.style.gridTemplateRows = `repeat(${SIZE}, 1fr)`;
+  function renderBoard() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    board.style.gridTemplateColumns = `repeat(${SIZE}, 1fr)`;
+    board.style.gridTemplateRows = `repeat(${SIZE}, 1fr)`;
 
     for (let y = 0; y < SIZE; y++) {
       for (let x = 0; x < SIZE; x++) {
         const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.x = x;
-        cell.dataset.y = y;
-
-        const value = state.board[y][x];
-        if (value) cell.textContent = value.emoji;
-
-        if (isEdge(x, y, currentPlayer) && !value) {
-          cell.classList.add('edge');
+        cell.classList.add('cell');
+        const monster = state.board[y][x];
+        if (monster) {
+          cell.textContent = EMOJI[monster.type];
+          cell.style.backgroundColor = playerColors[monster.player];
         }
-
-        cell.addEventListener('click', () => {
-          if (selectedMonster && isEdge(x, y, currentPlayer) && !value) {
-            socket.emit('action', {
-              action: 'place',
-              data: { x, y, type: selectedMonster }
-            });
-            selectedMonster = null;
-          }
-        });
-
-        boardEl.appendChild(cell);
+        board.appendChild(cell);
       }
     }
-  }
 
-  function isEdge(x, y, player) {
-    if (player === 1) return y === 0;
-    if (player === 2) return x === SIZE - 1;
-    if (player === 3) return y === SIZE - 1;
-    if (player === 4) return x === 0;
-    return false;
+    document.getElementById('currentPlayer').textContent = state.current;
+    document.getElementById('totalGames').textContent = state.stats.totalGames;
+    document.getElementById('placedCount').textContent = state.placedCount;
+
+    const statsText = Object.entries(state.stats.player)
+      .map(([p, s]) => `P${p}: ${s.wins}-${s.losses}`)
+      .join(' | ');
+    document.getElementById('playerStats').textContent = statsText;
   }
 });
