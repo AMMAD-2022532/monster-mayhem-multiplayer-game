@@ -1,14 +1,13 @@
 {
   "name": "monstermayhem",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Multiplayer monster board game",
+  "main": "monsterServer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node monsterServer.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "async-mutex": "^0.5.0",
     "express": "^5.1.0",

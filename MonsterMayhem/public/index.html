@@ -1,38 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Monster Mayhem</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header id="topbar">
-  <div id="youAre">You are Player –</div>
-  <div>
-    Games Played: <span id="totalGames">0</span>
-    | Wins/Losses: <span id="playerStats">–</span>
-    | Turn: Player <span id="currentPlayer">–</span>
-    | Placed: <span id="placedCount">0</span>/1
+<!-- How to Play Modal -->
+<div id="howToPlayModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>📖 How to Play</h2>
+    <ul style="text-align:left;">
+      <li>🎮 Choose a player side:
+        <ul>
+          <li>Player 1 = Top</li>
+          <li>Player 2 = Right</li>
+          <li>Player 3 = Bottom</li>
+          <li>Player 4 = Left</li>
+        </ul>
+      </li>
+      <li>🔮 Select a monster: 🦇 Vampire, 🐺 Werewolf, or 👻 Ghost.</li>
+      <li>📍 Place your monsters on your side’s edge.</li>
+      <li>🎯 Move monsters to attack opponents.</li>
+      <li>⚔️ Battle rules:
+        <ul>
+          <li>🦇 Vampire beats 🐺 Werewolf</li>
+          <li>🐺 Werewolf beats 👻 Ghost</li>
+          <li>👻 Ghost beats 🦇 Vampire</li>
+          <li>Same type: both are removed</li>
+        </ul>
+      </li>
+      <li>🚫 You're eliminated if all placed monsters are gone.</li>
+      <li>🏆 Last player standing wins!</li>
+    </ul>
+    <button onclick="document.getElementById('howToPlayModal').classList.add('hidden')">Got it!</button>
   </div>
-  <div id="placedStats"></div>
-  <nav>
-    <button class="monster-btn" data-type="vampire">🦇 Vampire</button>
-    <button class="monster-btn" data-type="werewolf">🐺 Werewolf</button>
-    <button class="monster-btn" data-type="ghost">👻 Ghost</button>
-    <button id="endTurnBtn">End Turn</button>
-  </nav>
+</div>
+
+<!-- Player Select Modal -->
+<div id="playerSelectModal" class="modal">
+  <div class="modal-content">
+    <h2>Choose Your Player</h2>
+    <div class="player-buttons">
+      <button data-player="1">Player 1 (Top)</button>
+      <button data-player="2">Player 2 (Right)</button>
+      <button data-player="3">Player 3 (Bottom)</button>
+      <button data-player="4">Player 4 (Left)</button>
+    </div>
+    <br>
+    <button onclick="document.getElementById('howToPlayModal').classList.remove('hidden')">❓ How to Play</button>
+  </div>
+</div>
+
+<!-- Game Over Modal -->
+<div id="gameOverModal" class="modal hidden">
+  <div class="modal-content">
+    <h2 id="gameOverText">🎉 Player X wins! 🎉</h2>
+    <button id="restartBtn">🔄 Restart Game</button>
+  </div>
+</div>
+
+<!-- Game Header -->
+<header id="topbar">
+  <div class="header-top">
+    <div id="youAre">You are Player –</div>
+    <nav>
+      <button class="monster-btn" data-type="vampire" title="Vampire beats Werewolf">🦇 Vampire</button>
+      <button class="monster-btn" data-type="werewolf" title="Werewolf beats Ghost">🐺 Werewolf</button>
+      <button class="monster-btn" data-type="ghost" title="Ghost beats Vampire">👻 Ghost</button>
+      <button id="endTurnBtn" title="Finish your move">End Turn</button>
+    </nav>
+  </div>
+
+  <div class="header-bottom">
+    <div class="stat-block">
+      <strong>Games Played:</strong> <span id="totalGames">0</span><br>
+      <strong>Wins/Losses:</strong> <span id="playerStats">–</span>
+    </div>
+
+    <div class="stat-block">
+      <strong>Turn:</strong> <span id="currentPlayer" style="color: #ffeb3b; font-weight: bold;">–</span><br>
+      <strong>Placement:</strong> <span id="placedCount">You placed 0 out of 1 monster this turn</span>
+    </div>
+
+    <div class="stat-block">
+      <strong>Players:</strong>
+      <ul id="placedStatsList"></ul>
+    </div>
+
+    <div class="stat-block">
+      <strong>Your Monsters:</strong>
+      <ul id="monsterTypeCount"></ul>
+    </div>
+  </div>
 </header>
 
+<!-- Game Board -->
 <main id="board" aria-label="Game Board"></main>
 
+<!-- Move Log -->
 <aside id="logSection" aria-live="polite">
   <ul id="log"></ul>
 </aside>
 
+<!-- Scripts -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="monsterClient.js"></script>
+
 
 </body>
 </html>

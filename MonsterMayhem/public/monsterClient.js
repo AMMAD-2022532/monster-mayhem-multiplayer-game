@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const SIZE = 10;
   const MAX_MONSTERS = 10;
@@ -71,9 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     monsterBtns.forEach(b => {
       b.addEventListener('click', () => {
-        monsterBtns.forEach(x => x.classList.remove('active'));
-        b.classList.add('active');
-        selectedType = b.dataset.type;
+        if (b.classList.contains('active')) {
+          b.classList.remove('active');
+          selectedType = null;
+        } else {
+          monsterBtns.forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+          selectedType = b.dataset.type;
+        }
         selectedPos = null;
         clearHighlights();
       });
@@ -165,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const occ = state.board[y][x];
 
       const myPlaced = state.board.flat().filter(c => c?.player === myPlayer).length;
-      if (!occ && state.placedCount === 0 && isEdge(x, y, state.current) && myPlaced < MAX_MONSTERS) {
+      if (!occ && state.placedCount === 0 && isEdge(x, y, state.current) && myPlaced < MAX_MONSTERS && selectedType) {
         emit('place', { x, y, type: selectedType });
         return;
       }
