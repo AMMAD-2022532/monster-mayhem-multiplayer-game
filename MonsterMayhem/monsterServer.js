@@ -30,7 +30,7 @@ class Game {
     };
     this.startNewGame();
   }
-
+//
   startNewGame() {
     this.board = Array.from({ length: this.SIZE }, () => Array(this.SIZE).fill(null));
     this.removed = { 1: 0, 2: 0, 3: 0, 4: 0 };
