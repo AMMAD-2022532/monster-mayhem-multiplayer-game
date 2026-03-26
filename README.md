@@ -93,7 +93,6 @@ This project helped me to understand:
 - Real-time client-server communication
 - Concurrency handling in Node.js
 - Turn-based game logic
-- Object-Oriented Programming concepts
 - Frontend and backend integration
 
 ## Author
